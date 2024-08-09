@@ -11,6 +11,7 @@ public class BuffManager : MonoBehaviour
     public float buffDuration = 5f; // Duration each buff stays active
 
     private GameObject currentBuff;
+    private bool isRoundActive = true; // Track if a round is active
 
     void Start()
     {
@@ -25,18 +26,40 @@ public class BuffManager : MonoBehaviour
             float spawnInterval = Random.Range(minSpawnInterval, maxSpawnInterval);
             yield return new WaitForSeconds(spawnInterval);
 
-            // Destroy the current buff if it exists
-            if (currentBuff != null)
+            // Only spawn buff if round is active
+            if (isRoundActive)
             {
-                Destroy(currentBuff);
+                // Destroy the current buff if it exists
+                if (currentBuff != null)
+                {
+                    Destroy(currentBuff);
+                }
+
+                // Randomly select a buff prefab and spawn it at the fixed position
+                GameObject buffPrefab = buffPrefabs[Random.Range(0, buffPrefabs.Length)];
+                currentBuff = Instantiate(buffPrefab, spawnPosition, Quaternion.identity);
+
+                // Destroy the buff after the specified duration
+                Destroy(currentBuff, buffDuration);
             }
-
-            // Randomly select a buff prefab and spawn it at the fixed position
-            GameObject buffPrefab = buffPrefabs[Random.Range(0, buffPrefabs.Length)];
-            currentBuff = Instantiate(buffPrefab, spawnPosition, Quaternion.identity);
-
-            // Destroy the buff after the specified duration
-            Destroy(currentBuff, buffDuration);
         }
+    }
+
+    // Method to disable spawning of buffs
+    public void StopSpawningBuffs()
+    {
+        isRoundActive = false;
+
+        // Destroy the current buff if it exists
+        if (currentBuff != null)
+        {
+            Destroy(currentBuff);
+        }
+    }
+
+    // Method to enable spawning of buffs
+    public void StartSpawningBuffs()
+    {
+        isRoundActive = true;
     }
 }

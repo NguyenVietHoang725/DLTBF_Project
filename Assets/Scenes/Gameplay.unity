@@ -974,8 +974,9 @@ MonoBehaviour:
   countdownDuration: 3
   scoreManager: {fileID: 586958788}
   guideObject: {fileID: 1717464753}
-  guideYPosition: 9.3
+  guideYPosition: 8.5
   gravityIncreaseRate: 1
+  buffManager: {fileID: 399129458}
 --- !u!58 &771043739
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2447,7 +2448,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 92dd3fbbe9b0bd240ba2b451f1136de6, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2467,7 +2468,7 @@ Transform:
   m_GameObject: {fileID: 1717464753}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 9.3, z: 0}
+  m_LocalPosition: {x: 0, y: 8.5, z: 0}
   m_LocalScale: {x: 1, y: -1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

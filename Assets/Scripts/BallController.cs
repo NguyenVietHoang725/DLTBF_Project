@@ -26,6 +26,8 @@ public class BallController : MonoBehaviour
     public float gravityIncreaseRate = 0.5f; // Rate at which gravity increases
     private float initialGravityScale;
 
+    public BuffManager buffManager; // Reference to BuffManager
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -48,6 +50,8 @@ public class BallController : MonoBehaviour
 
     IEnumerator StartFirstRound()
     {
+        buffManager.StopSpawningBuffs();
+
         // Set the ball position to a fixed starting point
         transform.position = new Vector3(0.19f, 4f, 0); // Example position; adjust as needed
 
@@ -67,6 +71,8 @@ public class BallController : MonoBehaviour
 
         // Launch the ball in a random direction for the first round
         LaunchBall();
+
+        buffManager.StartSpawningBuffs();
     }
 
     void LaunchBall()
@@ -80,6 +86,11 @@ public class BallController : MonoBehaviour
 
     IEnumerator StartNewRound()
     {
+        player1.ResetBuffs();
+        player2.ResetBuffs();
+
+        buffManager.StopSpawningBuffs();
+
         // Set the ball position above the player who won the previous round
         Vector3 spawnPosition = lastRoundWinner.transform.position + Vector3.up * 7f; // Adjust offset if needed
         transform.position = spawnPosition;
@@ -100,6 +111,8 @@ public class BallController : MonoBehaviour
 
         // Enable gravity and let the ball fall
         rb.gravityScale = initialGravityScale;
+
+        buffManager.StartSpawningBuffs();
 
         // Reset isGrounded flag to ensure proper collision detection
         isGrounded = false;

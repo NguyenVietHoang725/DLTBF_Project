@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour
     public float maxFallSpeed = 18.0f;
     public float fallSpeedMultiplier = 2.0f;
 
+    private Vector3 originalScale;
+
     void Awake()
     {
         if (_rb == null)
@@ -53,6 +55,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         originalMoveSpeed = moveSpeed;
+        originalScale = transform.localScale;
     }
 
     // Update is called once per frame
@@ -128,6 +131,17 @@ public class PlayerController : MonoBehaviour
         currentScale.x = isFacingRight ? Mathf.Abs(currentScale.x) : -Mathf.Abs(currentScale.x);
         return currentScale;
     }
+
+    public void ResetBuffs()
+    {
+        moveSpeed = originalMoveSpeed;
+        transform.localScale = originalScale;
+
+        // Ensure the facing direction is correct after resetting the scale
+        Vector3 ls = transform.localScale;
+        ls.x = isFacingRight ? Mathf.Abs(ls.x) : -Mathf.Abs(ls.x);
+        transform.localScale = ls;
+    }    
 
     // Coroutine to temporarily increase the player's speed
     public IEnumerator IncreaseSpeed(float duration)
