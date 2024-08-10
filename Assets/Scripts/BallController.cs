@@ -1,32 +1,33 @@
 using System.Collections;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 
 public class BallController : MonoBehaviour
 {
-    public float initialSpeed = 5f; // Initial speed of the ball
-    public float maxSpeed = 10f; // Maximum speed of the ball
+    public float initialSpeed = 5f;
+    public float maxSpeed = 10f;
     private Rigidbody2D rb;
     public PhysicsMaterial2D noBounceMaterial;
     private PhysicsMaterial2D originalMaterial;
-    private bool isGrounded = false; // Flag to check if the ball is grounded
+    private bool isGrounded = false;
 
     public PlayerController player1;
     public PlayerController player2;
-    public TMP_Text countdownText; // Reference to the TextMeshPro Text for countdown
-    public float countdownDuration = 3f; // Countdown duration
+    public Image readyImage;   // New Image component for "Ready"
+    public Image startImage;   // New Image component for "Start"
+    public Image countdownImage;
+    public Sprite[] countdownSprites;
+    public float countdownDuration = 3f;
 
     private PlayerController lastRoundWinner;
-    private PlayerController lastPlayerTouched; // The player who last touched the ball
-    public ScoreManager scoreManager; // Reference to ScoreManager
+    private PlayerController lastPlayerTouched;
+    public ScoreManager scoreManager;
+    public GameObject guideObject;
+    public float guideYPosition = 10f;
 
-    public GameObject guideObject; // Reference to the guide object
-    public float guideYPosition = 10f; // Fixed Y position for the guide object
-
-    public float gravityIncreaseRate = 0.5f; // Rate at which gravity increases
+    public float gravityIncreaseRate = 0.5f;
     private float initialGravityScale;
-
-    public BuffManager buffManager; // Reference to BuffManager
+    public BuffManager buffManager;
 
     void Start()
     {
@@ -34,17 +35,14 @@ public class BallController : MonoBehaviour
         originalMaterial = GetComponent<Collider2D>().sharedMaterial;
         initialGravityScale = rb.gravityScale;
 
-        // Ensure initial conditions are set
-        rb.gravityScale = 0; // Disable gravity to prevent the ball from falling
-        rb.velocity = Vector2.zero; // Ensure the ball has no initial velocity
+        rb.gravityScale = 0;
+        rb.velocity = Vector2.zero;
 
-        // Hide the guide object at the start
         if (guideObject != null)
         {
             guideObject.SetActive(false);
         }
 
-        // Start the first round with a countdown
         StartCoroutine(StartFirstRound());
     }
 
@@ -52,24 +50,34 @@ public class BallController : MonoBehaviour
     {
         buffManager.StopSpawningBuffs();
 
-        // Set the ball position to a fixed starting point
-        transform.position = new Vector3(0.19f, 4f, 0); // Example position; adjust as needed
+        transform.position = new Vector3(0.19f, 4f, 0);
 
-        // Ensure the ball does not move during the countdown
-        rb.gravityScale = 0; // Disable gravity
-        rb.velocity = Vector2.zero; // Ensure no velocity
+        rb.gravityScale = 0;
+        rb.velocity = Vector2.zero;
 
-        // Display countdown before launching the ball
-        for (float i = countdownDuration; i > 0; i--)
+        // Show the "Ready" image
+        readyImage.enabled = true;
+        startImage.enabled = false;
+        countdownImage.enabled = false;
+        yield return new WaitForSeconds(1f);
+        readyImage.enabled = false;
+
+        // Countdown "3", "2", "1"
+        countdownImage.enabled = true;
+        for (int i = (int)countdownDuration; i > 0; i--)
         {
-            countdownText.text = i.ToString();
+            countdownImage.sprite = countdownSprites[i - 1]; // "3", "2", "1"
+            countdownImage.enabled = true;
             yield return new WaitForSeconds(1f);
         }
-        countdownText.text = "Start!";
-        yield return new WaitForSeconds(1f);
-        countdownText.text = "";
 
-        // Launch the ball in a random direction for the first round
+        countdownImage.enabled = false;
+
+        // Show the "Start" image
+        startImage.enabled = true;
+        yield return new WaitForSeconds(1f);
+        startImage.enabled = false;
+
         LaunchBall();
 
         buffManager.StartSpawningBuffs();
@@ -79,8 +87,6 @@ public class BallController : MonoBehaviour
     {
         Vector2 launchDirection = new Vector2(Random.Range(-1f, 1f), 1).normalized;
         rb.velocity = launchDirection * initialSpeed;
-
-        // Enable gravity
         rb.gravityScale = initialGravityScale;
     }
 
@@ -91,30 +97,37 @@ public class BallController : MonoBehaviour
 
         buffManager.StopSpawningBuffs();
 
-        // Set the ball position above the player who won the previous round
-        Vector3 spawnPosition = lastRoundWinner.transform.position + Vector3.up * 7f; // Adjust offset if needed
+        Vector3 spawnPosition = lastRoundWinner.transform.position + Vector3.up * 7f;
         transform.position = spawnPosition;
 
-        // Ensure the ball does not move during the countdown
-        rb.gravityScale = 0; // Disable gravity
-        rb.velocity = Vector2.zero; // Ensure no velocity
+        rb.gravityScale = 0;
+        rb.velocity = Vector2.zero;
 
-        // Display countdown before letting the ball fall
-        for (float i = countdownDuration; i > 0; i--)
+        // Show the "Ready" image
+        readyImage.enabled = true;
+        startImage.enabled = false;
+        countdownImage.enabled = false;
+        yield return new WaitForSeconds(1f);
+        readyImage.enabled = false;
+
+        // Countdown "3", "2", "1"
+        countdownImage.enabled = true;
+        for (int i = (int)countdownDuration; i > 0; i--)
         {
-            countdownText.text = i.ToString();
+            countdownImage.sprite = countdownSprites[i - 1]; // "3", "2", "1"
+            countdownImage.enabled = true;
             yield return new WaitForSeconds(1f);
         }
-        countdownText.text = "Start!";
+
+        countdownImage.enabled = false;
+
+        // Show the "Start" image
+        startImage.enabled = true;
         yield return new WaitForSeconds(1f);
-        countdownText.text = "";
+        startImage.enabled = false;
 
-        // Enable gravity and let the ball fall
         rb.gravityScale = initialGravityScale;
-
         buffManager.StartSpawningBuffs();
-
-        // Reset isGrounded flag to ensure proper collision detection
         isGrounded = false;
     }
 
@@ -127,6 +140,8 @@ public class BallController : MonoBehaviour
 
     void Update()
     {
+        float yThreshold = 9.0f;
+
         // Update the position of the guide object to have the same X coordinate as the ball
         if (guideObject != null)
         {
@@ -135,13 +150,11 @@ public class BallController : MonoBehaviour
             guidePosition.y = guideYPosition; // Fixed Y coordinate
             guideObject.transform.position = guidePosition;
 
-            // Check if the ball is within the camera view
-            Vector3 viewportPosition = Camera.main.WorldToViewportPoint(transform.position);
-            bool isInViewport = viewportPosition.x >= 0 && viewportPosition.x <= 1 &&
-                                viewportPosition.y >= 0 && viewportPosition.y <= 1;
+            // Check if the ball is above the Y threshold
+            bool isAboveThreshold = transform.position.y > yThreshold;
 
-            // Show or hide the guide object based on the ball's position
-            guideObject.SetActive(!isInViewport);
+            // Show or hide the guide object based on the ball's Y position
+            guideObject.SetActive(isAboveThreshold);
         }
 
         // Rotate the ball based on its velocity
