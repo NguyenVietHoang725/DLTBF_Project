@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using static System.Collections.Specialized.BitVector32;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -21,6 +22,11 @@ public class ScoreManager : MonoBehaviour
     public PlayerController player1;
     public PlayerController player2;
 
+    public AudioClip scoreIncreaseSound; // Sound effect for increasing score
+    public AudioClip setWinSound;        // Sound effect for winning a set
+    public AudioClip matchWinSound;      // Sound effect for winning the match
+    private AudioSource audioSource;
+
     private int player1Score = 0;
     private int player2Score = 0;
     private int player1SetsWon = 0;
@@ -30,10 +36,11 @@ public class ScoreManager : MonoBehaviour
     public int setsToWinMatch = 2;     // Number of sets needed to win the match
     public float setDelay = 1f;        // Delay between sets
 
-    private bool matchWon = false;     // Flag to check if match is won
+    public bool matchWon = false;     // Flag to check if match is won
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         UpdateScoreImages();
         UpdateSetImages();
         setEndedImage.enabled = false; // Hide "Set Ended" image at the start
@@ -51,6 +58,12 @@ public class ScoreManager : MonoBehaviour
             player2Score++;
         }
         UpdateScoreImages();
+
+        // Play the score increase sound
+        if (player1Score != 5 && player2Score != 5 && scoreIncreaseSound != null)
+        {
+            audioSource.PlayOneShot(scoreIncreaseSound);
+        }
 
         // Check if any player has won the set
         CheckForSetWin();
@@ -89,15 +102,25 @@ public class ScoreManager : MonoBehaviour
 
     void CheckForSetWin()
     {
+        bool setWon = false;
+
         if (player1Score >= winningScore)
         {
             player1SetsWon++;
+            setWon = true;
             StartCoroutine(ShowSetEndedAndResetScores());
         }
         else if (player2Score >= winningScore)
         {
             player2SetsWon++;
+            setWon = true;
+
             StartCoroutine(ShowSetEndedAndResetScores());
+        }
+
+        if (setWon && player1SetsWon != 2 && player2SetsWon != 2 && setWinSound != null)
+        {
+            audioSource.PlayOneShot(setWinSound); // Play the set win sound
         }
 
         UpdateSetImages();
@@ -130,18 +153,32 @@ public class ScoreManager : MonoBehaviour
 
     void ShowWinMatchImage()
     {
-        matchWon = true; // Set match won flag
+        matchWon = true;
 
         if (player1SetsWon >= setsToWinMatch)
         {
-            winMatchImage.sprite = p1WonSprite; // Assign the "P1 Won" sprite
+            winMatchImage.sprite = p1WonSprite;
         }
         else if (player2SetsWon >= setsToWinMatch)
         {
-            winMatchImage.sprite = p2WonSprite; // Assign the "P2 Won" sprite
+            winMatchImage.sprite = p2WonSprite;
         }
-        winMatchImage.enabled = true; // Display the win match image
-        setEndedImage.enabled = false; // Hide the "Set Ended" image
-        Time.timeScale = 0; // Pause the game
+
+        winMatchImage.enabled = true;
+        setEndedImage.enabled = false;
+
+        // Stop the background music
+        MusicManager.instance.GetMusicSource().Pause();
+
+        // Play the match win sound
+        if (matchWinSound != null)
+        {
+            audioSource.PlayOneShot(matchWinSound);
+        }
+
+        Time.timeScale = 0;
+
+        // Show the end menu panel
+        FindObjectOfType<EndMenuController>().ShowEndMenu();
     }
 }

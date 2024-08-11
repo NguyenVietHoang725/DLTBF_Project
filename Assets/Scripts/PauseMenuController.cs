@@ -4,10 +4,12 @@ using UnityEngine.SceneManagement;
 public class PauseMenuController : MonoBehaviour
 {
     public GameObject pauseMenuPanel;
+    public GameObject volumeMenuPanel;
 
     void Start()
     {
         pauseMenuPanel.SetActive(false);
+        volumeMenuPanel.SetActive(false);
     }
 
     void Update()
@@ -22,6 +24,7 @@ public class PauseMenuController : MonoBehaviour
     {
         bool isActive = pauseMenuPanel.activeSelf;
         pauseMenuPanel.SetActive(!isActive);
+        volumeMenuPanel.SetActive(false);
         Time.timeScale = isActive ? 1 : 0; 
     }
 
@@ -40,5 +43,17 @@ public class PauseMenuController : MonoBehaviour
     {
         Time.timeScale = 1; 
         SceneManager.LoadScene("Main Menu");
+    }
+
+    public void OnVolumeButtonClicked()
+    {
+        pauseMenuPanel.SetActive(false);
+        volumeMenuPanel.SetActive(true);
+    }
+
+    public void OnBackToPauseMenuButtonClicked()
+    {
+        volumeMenuPanel.SetActive(false);
+        pauseMenuPanel.SetActive(true);
     }
 }

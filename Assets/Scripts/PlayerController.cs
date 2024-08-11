@@ -7,12 +7,16 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D _rb;
     public Animator animator;
+    public AudioSource audioSource; 
+    public AudioClip jumpSound;
+    public AudioClip speedBuffSound;
+    public AudioClip sizeBuffSound;
     bool isFacingRight = true;
 
     [Header("Movement")]
     public float moveSpeed = 7.0f;
     private float _horizontalMovement;
-    private float originalMoveSpeed; // Original move speed for reset
+    private float originalMoveSpeed; 
 
     [Header("Jumping")]
     public float jumpPower = 10.0f;
@@ -49,6 +53,15 @@ public class PlayerController : MonoBehaviour
                 Debug.LogError("Animator component not found on " + gameObject.name);
             }
         }
+
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                Debug.LogError("AudioSource component not found on " + gameObject.name);
+            }
+        }
     }
 
     // Start is called before the first frame update
@@ -56,6 +69,7 @@ public class PlayerController : MonoBehaviour
     {
         originalMoveSpeed = moveSpeed;
         originalScale = transform.localScale;
+        audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
     }
 
     // Update is called once per frame
@@ -100,6 +114,7 @@ public class PlayerController : MonoBehaviour
         {
             _rb.velocity = new Vector2(_rb.velocity.x, jumpPower);
             animator.SetTrigger("jump");
+            audioSource.PlayOneShot(jumpSound);
         }
     }
 
@@ -146,6 +161,7 @@ public class PlayerController : MonoBehaviour
     // Coroutine to temporarily increase the player's speed
     public IEnumerator IncreaseSpeed(float duration)
     {
+        audioSource.PlayOneShot(speedBuffSound);
         moveSpeed *= 1.5f; // Increase speed by 50%
         yield return new WaitForSeconds(duration);
         moveSpeed = originalMoveSpeed; // Reset to original speed
@@ -154,6 +170,7 @@ public class PlayerController : MonoBehaviour
     // Coroutine to temporarily increase the player's size
     public IEnumerator IncreaseSize(float duration)
     {
+        audioSource.PlayOneShot(sizeBuffSound);
         Vector3 originalScale = GetCurrentScale();
         bool originalFacingRight = isFacingRight;
 
