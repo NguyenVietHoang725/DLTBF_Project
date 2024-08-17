@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D _rb;
     public Animator animator;
-    public AudioSource audioSource; 
+    public AudioSource audioSource;
     public AudioClip jumpSound;
     public AudioClip speedBuffSound;
     public AudioClip sizeBuffSound;
@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 7.0f;
     private float _horizontalMovement;
-    private float originalMoveSpeed; 
+    private float originalMoveSpeed;
 
     [Header("Jumping")]
     public float jumpPower = 10.0f;
@@ -33,6 +33,10 @@ public class PlayerController : MonoBehaviour
     public float fallSpeedMultiplier = 2.0f;
 
     private Vector3 originalScale;
+    private bool isFrozen = false;
+
+    // New variable to control whether the player is allowed to move
+    public bool isRoundStarting = false;
 
     void Awake()
     {
@@ -64,20 +68,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         originalMoveSpeed = moveSpeed;
-        originalScale = transform.localScale;
+        originalScale = GetCurrentScale();
         audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
     }
 
-    // Update is called once per frame
     void Update()
     {
         GroundCheck();
         Gravity();
         Flip();
+
+        if (isRoundStarting)
+        {
+            _horizontalMovement = 0; // Prevent movement
+            return;
+        }
 
         _rb.velocity = new Vector2(_horizontalMovement * moveSpeed, _rb.velocity.y);
 
@@ -152,36 +160,57 @@ public class PlayerController : MonoBehaviour
         moveSpeed = originalMoveSpeed;
         transform.localScale = originalScale;
 
-        // Ensure the facing direction is correct after resetting the scale
         Vector3 ls = transform.localScale;
         ls.x = isFacingRight ? Mathf.Abs(ls.x) : -Mathf.Abs(ls.x);
         transform.localScale = ls;
-    }    
+    }
 
-    // Coroutine to temporarily increase the player's speed
     public IEnumerator IncreaseSpeed(float duration)
     {
         audioSource.PlayOneShot(speedBuffSound);
-        moveSpeed *= 1.5f; // Increase speed by 50%
+        moveSpeed *= 1.5f;
         yield return new WaitForSeconds(duration);
-        moveSpeed = originalMoveSpeed; // Reset to original speed
+        moveSpeed = originalMoveSpeed;
     }
 
-    // Coroutine to temporarily increase the player's size
     public IEnumerator IncreaseSize(float duration)
     {
         audioSource.PlayOneShot(sizeBuffSound);
-        Vector3 originalScale = GetCurrentScale();
-        bool originalFacingRight = isFacingRight;
+        Vector3 originalFacingScale = GetCurrentScale();
 
-        transform.localScale = originalScale * 1.5f; // Increase size by 50%
+        transform.localScale = originalFacingScale * 1.5f;
         yield return new WaitForSeconds(duration);
 
-        transform.localScale = originalScale; // Reset to original size
+        transform.localScale = originalFacingScale;
 
-        isFacingRight = originalFacingRight; 
         Vector3 ls = transform.localScale;
-        ls.x = isFacingRight ? Mathf.Abs(ls.x) : -Mathf.Abs(ls.x); 
+        ls.x = isFacingRight ? Mathf.Abs(ls.x) : -Mathf.Abs(ls.x);
         transform.localScale = ls;
+    }
+
+    public IEnumerator DecreaseSize(float duration)
+    {
+        audioSource.PlayOneShot(sizeBuffSound);
+        Vector3 originalFacingScale = GetCurrentScale();
+
+        transform.localScale = originalFacingScale * 0.5f;
+        yield return new WaitForSeconds(duration);
+
+        transform.localScale = originalFacingScale;
+
+        Vector3 ls = transform.localScale;
+        ls.x = isFacingRight ? Mathf.Abs(ls.x) : -Mathf.Abs(ls.x);
+        transform.localScale = ls;
+    }
+
+    public void Freeze(bool freeze)
+    {
+        isFrozen = freeze;
+
+        if (isFrozen)
+        {
+            _horizontalMovement = 0;
+            _rb.velocity = new Vector2(0, 0);
+        }
     }
 }

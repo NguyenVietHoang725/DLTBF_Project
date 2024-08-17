@@ -31,13 +31,16 @@ public class BallController : MonoBehaviour
 
     public AudioSource audioSource; 
     public AudioClip playerHitSound; 
-    public AudioClip wallHitSound; 
+    public AudioClip wallHitSound;
+
+    private Vector3 originalScale;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         originalMaterial = GetComponent<Collider2D>().sharedMaterial;
         initialGravityScale = rb.gravityScale;
+        originalScale = transform.localScale;
 
         rb.gravityScale = 0;
         rb.velocity = Vector2.zero;
@@ -56,7 +59,7 @@ public class BallController : MonoBehaviour
     {
         buffManager.StopSpawningBuffs();
 
-        transform.position = new Vector3(0.19f, 4f, 0);
+        transform.position = new Vector3(0, 4f, 0);
 
         rb.gravityScale = 0;
         rb.velocity = Vector2.zero;
@@ -104,6 +107,8 @@ public class BallController : MonoBehaviour
             yield break; // Exit the coroutine if the match is won
         }
 
+        transform.localScale = originalScale;
+
         player1.ResetBuffs();
         player2.ResetBuffs();
 
@@ -137,8 +142,9 @@ public class BallController : MonoBehaviour
         startImage.enabled = true;
         yield return new WaitForSeconds(1f);
         startImage.enabled = false;
-
-        rb.gravityScale = initialGravityScale;
+        
+        rb.gravityScale = initialGravityScale; 
+            
         buffManager.StartSpawningBuffs();
         isGrounded = false;
     }
@@ -164,16 +170,17 @@ public class BallController : MonoBehaviour
 
             guideObject.SetActive(isAboveThreshold);
         }
-
-        float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
+            
+        float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;           
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-
-        if (rb.gravityScale > 0)
-        {
-            rb.gravityScale += gravityIncreaseRate * Time.deltaTime;
+            
+        if (rb.gravityScale > 0)           
+        {          
+            rb.gravityScale += gravityIncreaseRate * Time.deltaTime;           
         }
-
+          
         LimitBallSpeed();
+
     }
 
     void LimitBallSpeed()
@@ -236,5 +243,12 @@ public class BallController : MonoBehaviour
     public PlayerController GetLastPlayerTouched()
     {
         return lastPlayerTouched;
+    }
+
+    public IEnumerator ChangeSize(float scaleMultiplier, float duration)
+    {
+        transform.localScale = originalScale * scaleMultiplier; 
+        yield return new WaitForSeconds(duration);
+        transform.localScale = originalScale; 
     }
 }

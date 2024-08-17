@@ -683,8 +683,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffPrefabs:
-  - {fileID: 8173651305135007798, guid: 11dde3004d635f047bef0bded137104c, type: 3}
   - {fileID: 7780657329618366150, guid: 0bb7149239693e44d9c98c459abaffff, type: 3}
+  - {fileID: 8173651305135007798, guid: 11dde3004d635f047bef0bded137104c, type: 3}
+  - {fileID: 2294275496952752960, guid: 3a312c339de4f8b4d8fc6d27d6995019, type: 3}
+  - {fileID: 7916761912945320322, guid: 7019f7903151b0b4986d864e4476f82d, type: 3}
+  - {fileID: 3692171282090785926, guid: 8ef5d549228cbcf41bc65fc9faf7395e, type: 3}
+  - {fileID: 1877231126648453045, guid: c89681def6ae16f4cb62a6a61e976c07, type: 3}
   spawnPosition: {x: 0, y: 3, z: 0}
   minSpawnInterval: 5
   maxSpawnInterval: 15
@@ -2819,6 +2823,7 @@ MonoBehaviour:
   baseGravity: 2
   maxFallSpeed: 18
   fallSpeedMultiplier: 2
+  isRoundStarting: 0
 --- !u!114 &1037827605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3807,6 +3812,7 @@ MonoBehaviour:
   baseGravity: 2
   maxFallSpeed: 18
   fallSpeedMultiplier: 2
+  isRoundStarting: 0
 --- !u!114 &1279356314
 MonoBehaviour:
   m_ObjectHideFlags: 0

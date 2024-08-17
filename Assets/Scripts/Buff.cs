@@ -5,45 +5,95 @@ using UnityEngine;
 public enum BuffType
 {
     Speed,
-    Size
+    IncreasePlayerSize,
+    DecreasePlayerSize,
+    IncreaseBallSize,
+    DecreaseBallSize,
+    FreezeOpponent
 }
 
 public class Buff : MonoBehaviour
 {
-    public BuffType buffType; // The type of buff (Speed or Size)
-    public float buffDuration = 7f; // Duration the buff remains active on the player
+    public BuffType buffType;
+    public float buffDuration = 7f;
 
-    // Handle the collision with the ball
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Ball"))
         {
-            // Find the player who last touched the ball
             BallController ball = other.GetComponent<BallController>();
             if (ball != null)
             {
-                PlayerController player = ball.GetLastPlayerTouched();
-                if (player != null)
+                PlayerController lastPlayerTouched = ball.GetLastPlayerTouched();
+                if (lastPlayerTouched != null)
                 {
-                    ApplyBuff(player);
+                    ApplyPlayerBuff(lastPlayerTouched);
                 }
-
-                // Destroy the buff object
+                ApplyBallBuff(ball);
                 Destroy(gameObject);
             }
         }
     }
 
-    private void ApplyBuff(PlayerController player)
+    private void ApplyPlayerBuff(PlayerController player)
     {
+        PlayerController opponent = FindOpponent(player);
+
         switch (buffType)
         {
             case BuffType.Speed:
                 player.StartCoroutine(player.IncreaseSpeed(buffDuration));
                 break;
-            case BuffType.Size:
+            case BuffType.IncreasePlayerSize:
                 player.StartCoroutine(player.IncreaseSize(buffDuration));
                 break;
+            case BuffType.DecreasePlayerSize:
+                if (opponent != null)
+                {
+                    opponent.StartCoroutine(opponent.DecreaseSize(buffDuration));
+                }
+                break;
+            case BuffType.FreezeOpponent:
+                if (opponent != null)
+                {
+                    StartCoroutine(FreezeOpponentCoroutine(opponent, buffDuration));
+                }
+                break;
         }
+    }
+
+    private void ApplyBallBuff(BallController ball)
+    {
+        switch (buffType)
+        {
+            case BuffType.IncreaseBallSize:
+                ball.StartCoroutine(ball.ChangeSize(1.5f, buffDuration));
+                break;
+            case BuffType.DecreaseBallSize:
+                ball.StartCoroutine(ball.ChangeSize(0.5f, buffDuration));
+                break;
+        }
+    }
+
+    private PlayerController FindOpponent(PlayerController player)
+    {
+        BallController ballController = FindObjectOfType<BallController>();
+
+        if (ballController.player1 == player)
+        {
+            return ballController.player2;
+        }
+        else if (ballController.player2 == player)
+        {
+            return ballController.player1;
+        }
+        return null;
+    }
+
+    private IEnumerator FreezeOpponentCoroutine(PlayerController opponent, float duration)
+    {
+        opponent.Freeze(true); 
+        yield return new WaitForSeconds(duration);
+        opponent.Freeze(false); 
     }
 }
