@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,10 +6,8 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D _rb;
     public Animator animator;
-    public AudioSource audioSource;
-    public AudioClip jumpSound;
-    public AudioClip speedBuffSound;
-    public AudioClip sizeBuffSound;
+    public Sprite[] playerSprites;
+    public RuntimeAnimatorController[] animControllers;
     bool isFacingRight = true;
 
     [Header("Movement")]
@@ -35,7 +32,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 originalScale;
     private bool isFrozen = false;
 
-    // New variable to control whether the player is allowed to move
     public bool isRoundStarting = false;
 
     void Awake()
@@ -57,22 +53,13 @@ public class PlayerController : MonoBehaviour
                 Debug.LogError("Animator component not found on " + gameObject.name);
             }
         }
-
-        if (audioSource == null)
-        {
-            audioSource = GetComponent<AudioSource>();
-            if (audioSource == null)
-            {
-                Debug.LogError("AudioSource component not found on " + gameObject.name);
-            }
-        }
     }
 
     void Start()
     {
         originalMoveSpeed = moveSpeed;
-        originalScale = GetCurrentScale();
-        audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        originalScale = transform.localScale;
+        InitializePlayer();
     }
 
     void Update()
@@ -88,10 +75,6 @@ public class PlayerController : MonoBehaviour
         }
 
         _rb.velocity = new Vector2(_horizontalMovement * moveSpeed, _rb.velocity.y);
-
-        // Clamp y velocity and magnitude to avoid sudden spikes
-        float clampedYVelocity = Mathf.Clamp(_rb.velocity.y, -maxFallSpeed, jumpPower);
-        float clampedMagnitude = Mathf.Clamp(_rb.velocity.magnitude, 0, moveSpeed);
 
         animator.SetFloat("yVelocity", _rb.velocity.y);
         animator.SetFloat("magnitude", _rb.velocity.magnitude);
@@ -122,7 +105,6 @@ public class PlayerController : MonoBehaviour
         {
             _rb.velocity = new Vector2(_rb.velocity.x, jumpPower);
             animator.SetTrigger("jump");
-            audioSource.PlayOneShot(jumpSound);
         }
     }
 
@@ -140,12 +122,6 @@ public class PlayerController : MonoBehaviour
             ls.x *= -1f;
             transform.localScale = ls;
         }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.white;
-        Gizmos.DrawWireCube(groundCheckPos.position, groundCheckSize);
     }
 
     private Vector3 GetCurrentScale()
@@ -167,7 +143,6 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator IncreaseSpeed(float duration)
     {
-        audioSource.PlayOneShot(speedBuffSound);
         moveSpeed *= 1.5f;
         yield return new WaitForSeconds(duration);
         moveSpeed = originalMoveSpeed;
@@ -175,7 +150,6 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator IncreaseSize(float duration)
     {
-        audioSource.PlayOneShot(sizeBuffSound);
         Vector3 originalFacingScale = GetCurrentScale();
 
         transform.localScale = originalFacingScale * 1.5f;
@@ -190,7 +164,6 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator DecreaseSize(float duration)
     {
-        audioSource.PlayOneShot(sizeBuffSound);
         Vector3 originalFacingScale = GetCurrentScale();
 
         transform.localScale = originalFacingScale * 0.5f;
@@ -203,14 +176,42 @@ public class PlayerController : MonoBehaviour
         transform.localScale = ls;
     }
 
-    public void Freeze(bool freeze)
+    public void Freeze(bool shouldFreeze)
     {
-        isFrozen = freeze;
+        isFrozen = shouldFreeze;
+    }
 
-        if (isFrozen)
+    public void InitializePlayer()
+    {
+        string key = gameObject.name == "Player1" ? "Player1CharacterIndex" : "Player2CharacterIndex";
+        int playerIndex = PlayerPrefs.GetInt(key, 0);
+
+        SetCharacterAnimation(playerIndex);
+        SetCharacterSprite(playerIndex);
+    }
+
+    private void SetCharacterAnimation(int characterIndex)
+    {
+        if (characterIndex >= 0 && characterIndex < animControllers.Length)
         {
-            _horizontalMovement = 0;
-            _rb.velocity = new Vector2(0, 0);
+            animator.runtimeAnimatorController = animControllers[characterIndex];
+        }
+        else
+        {
+            Debug.LogError("Character index out of range for animControllers.");
+        }
+    }
+
+    private void SetCharacterSprite(int characterIndex)
+    {
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null && characterIndex >= 0 && characterIndex < playerSprites.Length)
+        {
+            spriteRenderer.sprite = playerSprites[characterIndex];
+        }
+        else
+        {
+            Debug.LogError("Character index out of range for playerSprites.");
         }
     }
 }
