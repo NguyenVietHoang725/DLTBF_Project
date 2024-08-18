@@ -29,8 +29,11 @@ public class PlayerController : MonoBehaviour
     public float maxFallSpeed = 18.0f;
     public float fallSpeedMultiplier = 2.0f;
 
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip jumpSound;
+
     private Vector3 originalScale;
-    private bool isFrozen = false;
 
     public bool isRoundStarting = false;
 
@@ -53,6 +56,15 @@ public class PlayerController : MonoBehaviour
                 Debug.LogError("Animator component not found on " + gameObject.name);
             }
         }
+
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
     }
 
     void Start()
@@ -70,7 +82,7 @@ public class PlayerController : MonoBehaviour
 
         if (isRoundStarting)
         {
-            _horizontalMovement = 0; // Prevent movement
+            _horizontalMovement = 0;
             return;
         }
 
@@ -105,6 +117,11 @@ public class PlayerController : MonoBehaviour
         {
             _rb.velocity = new Vector2(_rb.velocity.x, jumpPower);
             animator.SetTrigger("jump");
+
+            if (jumpSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(jumpSound);
+            }
         }
     }
 
@@ -174,11 +191,6 @@ public class PlayerController : MonoBehaviour
         Vector3 ls = transform.localScale;
         ls.x = isFacingRight ? Mathf.Abs(ls.x) : -Mathf.Abs(ls.x);
         transform.localScale = ls;
-    }
-
-    public void Freeze(bool shouldFreeze)
-    {
-        isFrozen = shouldFreeze;
     }
 
     public void InitializePlayer()

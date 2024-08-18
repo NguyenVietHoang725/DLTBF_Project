@@ -8,8 +8,7 @@ public enum BuffType
     IncreasePlayerSize,
     DecreasePlayerSize,
     IncreaseBallSize,
-    DecreaseBallSize,
-    FreezeOpponent
+    DecreaseBallSize
 }
 
 public class Buff : MonoBehaviour
@@ -53,12 +52,6 @@ public class Buff : MonoBehaviour
                     opponent.StartCoroutine(opponent.DecreaseSize(buffDuration));
                 }
                 break;
-            case BuffType.FreezeOpponent:
-                if (opponent != null)
-                {
-                    StartCoroutine(FreezeOpponentCoroutine(opponent, buffDuration));
-                }
-                break;
         }
     }
 
@@ -88,12 +81,5 @@ public class Buff : MonoBehaviour
             return ballController.player1;
         }
         return null;
-    }
-
-    private IEnumerator FreezeOpponentCoroutine(PlayerController opponent, float duration)
-    {
-        opponent.Freeze(true); 
-        yield return new WaitForSeconds(duration);
-        opponent.Freeze(false); 
     }
 }

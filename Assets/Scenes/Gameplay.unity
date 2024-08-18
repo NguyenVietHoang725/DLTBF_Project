@@ -734,7 +734,6 @@ MonoBehaviour:
   - {fileID: 2294275496952752960, guid: 3a312c339de4f8b4d8fc6d27d6995019, type: 3}
   - {fileID: 7916761912945320322, guid: 7019f7903151b0b4986d864e4476f82d, type: 3}
   - {fileID: 3692171282090785926, guid: 8ef5d549228cbcf41bc65fc9faf7395e, type: 3}
-  - {fileID: 1877231126648453045, guid: c89681def6ae16f4cb62a6a61e976c07, type: 3}
   spawnPosition: {x: 0, y: 3, z: 0}
   minSpawnInterval: 5
   maxSpawnInterval: 15
@@ -2883,6 +2882,8 @@ MonoBehaviour:
   baseGravity: 2
   maxFallSpeed: 18
   fallSpeedMultiplier: 2
+  audioSource: {fileID: 1037827611}
+  jumpSound: {fileID: 8300000, guid: 27e87c3460d9a5247b55dd50b5edbdc3, type: 3}
   isRoundStarting: 0
 --- !u!114 &1037827605
 MonoBehaviour:
@@ -3876,6 +3877,8 @@ MonoBehaviour:
   baseGravity: 2
   maxFallSpeed: 18
   fallSpeedMultiplier: 2
+  audioSource: {fileID: 1279356320}
+  jumpSound: {fileID: 8300000, guid: 27e87c3460d9a5247b55dd50b5edbdc3, type: 3}
   isRoundStarting: 0
 --- !u!114 &1279356314
 MonoBehaviour:
