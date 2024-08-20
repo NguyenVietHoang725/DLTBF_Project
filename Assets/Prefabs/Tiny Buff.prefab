@@ -134,4 +134,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffType: 2
-  buffDuration: 7
+  buffDuration: 5

@@ -30,4 +30,17 @@ public class MusicManager : MonoBehaviour
             musicSource.Play(); // Resume playing the music if it was stopped
         }
     }
+
+    public void PlayWinnerSound(AudioClip winnerSound)
+    {
+        musicSource.Stop();
+        AudioSource.PlayClipAtPoint(winnerSound, Vector3.zero);
+
+        Invoke("ResumeBackgroundMusic", winnerSound.length);
+    }
+
+    private void ResumeBackgroundMusic()
+    {
+        MusicManager.instance.ResumeMusic();
+    }
 }

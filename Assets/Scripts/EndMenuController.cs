@@ -34,6 +34,9 @@ public class EndMenuController : MonoBehaviour
     private void ReturnToMainMenu()
     {
         Time.timeScale = 1; // Resume the game
+        MusicManager.instance.ResumeMusic();
         SceneManager.LoadScene("Main Menu");
     }
+
+
 }

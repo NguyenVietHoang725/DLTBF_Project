@@ -8,7 +8,8 @@ public enum BuffType
     IncreasePlayerSize,
     DecreasePlayerSize,
     IncreaseBallSize,
-    DecreaseBallSize
+    DecreaseBallSize,
+    FreezeOpponent
 }
 
 public class Buff : MonoBehaviour
@@ -50,6 +51,12 @@ public class Buff : MonoBehaviour
                 if (opponent != null)
                 {
                     opponent.StartCoroutine(opponent.DecreaseSize(buffDuration));
+                }
+                break;
+            case BuffType.FreezeOpponent:
+                if (opponent != null)
+                {
+                    opponent.StartCoroutine(opponent.Freeze(buffDuration));
                 }
                 break;
         }

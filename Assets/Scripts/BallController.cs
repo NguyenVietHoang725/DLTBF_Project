@@ -13,8 +13,8 @@ public class BallController : MonoBehaviour
 
     public PlayerController player1;
     public PlayerController player2;
-    public Image readyImage;   // Image component for "Ready"
-    public Image startImage;   // Image component for "Start"
+    public Image readyImage;
+    public Image startImage;
     public Image countdownImage;
     public Sprite[] countdownSprites;
     public float countdownDuration = 3f;
@@ -29,11 +29,14 @@ public class BallController : MonoBehaviour
     private float initialGravityScale;
     public BuffManager buffManager;
 
-    public AudioSource audioSource; 
-    public AudioClip playerHitSound; 
+    public AudioSource audioSource;
+    public AudioClip playerHitSound;
     public AudioClip wallHitSound;
+    public AudioClip countdownSound;
 
     private Vector3 originalScale;
+    private bool countdownRunning = false;
+    public bool isPaused = false;
 
     void Start()
     {
@@ -72,14 +75,23 @@ public class BallController : MonoBehaviour
         readyImage.enabled = false;
 
         // Countdown "3", "2", "1"
+        audioSource.PlayOneShot(countdownSound);
+        countdownRunning = true;
         countdownImage.enabled = true;
         for (int i = (int)countdownDuration; i > 0; i--)
         {
+            if (isPaused)
+            {
+                audioSource.Pause();
+                yield return new WaitUntil(() => !isPaused);
+                audioSource.UnPause();
+            }
             countdownImage.sprite = countdownSprites[i - 1]; // "3", "2", "1"
             countdownImage.enabled = true;
             yield return new WaitForSeconds(1f);
         }
 
+        countdownRunning = false;
         countdownImage.enabled = false;
 
         // Show the "Start" image
@@ -104,6 +116,7 @@ public class BallController : MonoBehaviour
         // Check if the match is won before starting a new round
         if (scoreManager.matchWon)
         {
+            buffManager.EndGame();
             yield break; // Exit the coroutine if the match is won
         }
 
@@ -114,8 +127,26 @@ public class BallController : MonoBehaviour
 
         buffManager.StopSpawningBuffs();
 
-        Vector3 spawnPosition = lastRoundWinner.transform.position + Vector3.up * 7f;
-        transform.position = spawnPosition;
+        player1.DisableControls();
+        player2.DisableControls();
+
+        yield return new WaitForSeconds(1f);
+
+        Vector3 player1SidePosition = new Vector3(-7f, 4f, 0);
+        Vector3 player2SidePosition = new Vector3(7f, 4f, 0);
+
+        if (lastRoundWinner == player1)
+        {
+            transform.position = player2SidePosition;
+        }
+        else
+        {
+            transform.position = player1SidePosition;
+        }
+
+        ResetPlayerPositions();
+        player1.EnableControls();
+        player2.EnableControls();
 
         rb.gravityScale = 0;
         rb.velocity = Vector2.zero;
@@ -128,23 +159,32 @@ public class BallController : MonoBehaviour
         readyImage.enabled = false;
 
         // Countdown "3", "2", "1"
+        countdownRunning = true;
+        audioSource.PlayOneShot(countdownSound);
         countdownImage.enabled = true;
         for (int i = (int)countdownDuration; i > 0; i--)
         {
+            if (isPaused)
+            {
+                audioSource.Pause();
+                yield return new WaitUntil(() => !isPaused);
+                audioSource.UnPause();
+            }
             countdownImage.sprite = countdownSprites[i - 1]; // "3", "2", "1"
             countdownImage.enabled = true;
             yield return new WaitForSeconds(1f);
         }
 
+        countdownRunning = false;
         countdownImage.enabled = false;
 
         // Show the "Start" image
         startImage.enabled = true;
         yield return new WaitForSeconds(1f);
         startImage.enabled = false;
-        
-        rb.gravityScale = initialGravityScale; 
-            
+
+        rb.gravityScale = initialGravityScale;
+
         buffManager.StartSpawningBuffs();
         isGrounded = false;
     }
@@ -152,7 +192,7 @@ public class BallController : MonoBehaviour
     void ResetPlayerPositions()
     {
         player1.transform.position = new Vector3(-7f, player1.transform.position.y, player1.transform.position.z);
-        player2.transform.position = new Vector3(7.19f, player2.transform.position.y, player2.transform.position.z);
+        player2.transform.position = new Vector3(7f, player2.transform.position.y, player2.transform.position.z);
     }
 
     void Update()
@@ -170,17 +210,17 @@ public class BallController : MonoBehaviour
 
             guideObject.SetActive(isAboveThreshold);
         }
-            
-        float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;           
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
-            
-        if (rb.gravityScale > 0)           
-        {          
-            rb.gravityScale += gravityIncreaseRate * Time.deltaTime;           
-        }
-          
-        LimitBallSpeed();
 
+        float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+
+        if (rb.gravityScale > 0)
+        {
+            rb.gravityScale += gravityIncreaseRate * Time.deltaTime;
+        }
+
+        LimitBallSpeed();
+        CheckGameEnd();
     }
 
     void LimitBallSpeed()
@@ -217,8 +257,6 @@ public class BallController : MonoBehaviour
                 rb.gravityScale = 0;
                 rb.velocity = Vector2.zero;
 
-                ResetPlayerPositions();
-
                 StartCoroutine(StartNewRound());
             }
         }
@@ -229,7 +267,7 @@ public class BallController : MonoBehaviour
             if (collision.gameObject.CompareTag("Player"))
             {
                 lastPlayerTouched = collision.gameObject.GetComponent<PlayerController>();
-                audioSource.PlayOneShot(playerHitSound); 
+                audioSource.PlayOneShot(playerHitSound);
             }
             else if (collision.gameObject.CompareTag("Wall"))
             {
@@ -247,8 +285,62 @@ public class BallController : MonoBehaviour
 
     public IEnumerator ChangeSize(float scaleMultiplier, float duration)
     {
-        transform.localScale = originalScale * scaleMultiplier; 
+        transform.localScale = originalScale * scaleMultiplier;
         yield return new WaitForSeconds(duration);
-        transform.localScale = originalScale; 
+        transform.localScale = originalScale;
+    }
+
+    public void PauseCountdownSound()
+    {
+        if (countdownRunning)
+        {
+            audioSource.Pause();
+        }
+    }
+
+    public void ResumeCountdownSound()
+    {
+        if (countdownRunning)
+        {
+            audioSource.UnPause();
+        }
+    }
+
+    void CheckGameEnd()
+    {
+        if (scoreManager != null && scoreManager.matchWon)
+        {
+            EndGame();
+        }
+    }
+
+    void EndGame()
+    {
+        ResetBallPosition();
+
+        // Reset players to their starting positions
+        player1.transform.position = new Vector3(-7f, player1.transform.position.y, player1.transform.position.z);
+        player2.transform.position = new Vector3(7f, player2.transform.position.y, player2.transform.position.z);
+
+        // Disable player controls
+        player1.DisableControls();
+        player2.DisableControls();
+
+        // Display victory sprite for the winning player
+        if (scoreManager.GetWinningPlayer() == player1)
+        {
+            player1.DisplayVictorySprite();
+        }
+        else if (scoreManager.GetWinningPlayer() == player2)
+        {
+            player2.DisplayVictorySprite();
+        }
+    }
+
+    public void ResetBallPosition()
+    {
+        transform.position = new Vector3(0, 2f, 0);
+        rb.velocity = Vector2.zero; 
+        rb.gravityScale = 0; 
     }
 }

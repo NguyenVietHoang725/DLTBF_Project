@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     public Sprite[] playerSprites;
     public RuntimeAnimatorController[] animControllers;
+    public Sprite[] victorySprites;
     bool isFacingRight = true;
 
     [Header("Movement")]
@@ -32,10 +33,16 @@ public class PlayerController : MonoBehaviour
     [Header("Audio")]
     public AudioSource audioSource;
     public AudioClip jumpSound;
+    public AudioClip freezeBuffSound;
+    public AudioClip bigBuffSound;
+    public AudioClip tinyBuffSound;
+    public AudioClip speedBuffSound;
 
     private Vector3 originalScale;
 
     public bool isRoundStarting = false;
+    private bool canJump = true;
+    private bool controlsEnabled = true;
 
     void Awake()
     {
@@ -76,6 +83,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (!controlsEnabled) return;
         GroundCheck();
         Gravity();
         Flip();
@@ -113,7 +121,7 @@ public class PlayerController : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if (isGrounded && context.performed)
+        if (isGrounded && context.performed && canJump)
         {
             _rb.velocity = new Vector2(_rb.velocity.x, jumpPower);
             animator.SetTrigger("jump");
@@ -152,6 +160,7 @@ public class PlayerController : MonoBehaviour
     {
         moveSpeed = originalMoveSpeed;
         transform.localScale = originalScale;
+        canJump = true;
 
         Vector3 ls = transform.localScale;
         ls.x = isFacingRight ? Mathf.Abs(ls.x) : -Mathf.Abs(ls.x);
@@ -160,6 +169,10 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator IncreaseSpeed(float duration)
     {
+        if (speedBuffSound != null)
+        {
+            audioSource.PlayOneShot(speedBuffSound);
+        }
         moveSpeed *= 1.5f;
         yield return new WaitForSeconds(duration);
         moveSpeed = originalMoveSpeed;
@@ -167,6 +180,10 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator IncreaseSize(float duration)
     {
+        if (bigBuffSound != null)
+        {
+            audioSource.PlayOneShot(bigBuffSound);
+        }
         Vector3 originalFacingScale = GetCurrentScale();
 
         transform.localScale = originalFacingScale * 1.5f;
@@ -181,6 +198,10 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator DecreaseSize(float duration)
     {
+        if (tinyBuffSound != null)
+        {
+            audioSource.PlayOneShot(tinyBuffSound);
+        }
         Vector3 originalFacingScale = GetCurrentScale();
 
         transform.localScale = originalFacingScale * 0.5f;
@@ -191,6 +212,24 @@ public class PlayerController : MonoBehaviour
         Vector3 ls = transform.localScale;
         ls.x = isFacingRight ? Mathf.Abs(ls.x) : -Mathf.Abs(ls.x);
         transform.localScale = ls;
+    }
+
+    public IEnumerator Freeze(float duration)
+    {
+        if (freezeBuffSound != null)
+        {
+            audioSource.PlayOneShot(freezeBuffSound);
+        }
+        float originalMoveSpeed = moveSpeed; // Store the original movement speed
+
+        moveSpeed = 0; // Set the move speed to 0 to freeze the player
+        _horizontalMovement = 0; // Stop any movement input
+        canJump = false;
+
+        yield return new WaitForSeconds(duration);
+
+        moveSpeed = originalMoveSpeed; // Restore the original move speed
+        canJump = true;
     }
 
     public void InitializePlayer()
@@ -225,5 +264,42 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("Character index out of range for playerSprites.");
         }
+    }
+
+    public void DisableControls()
+    {
+        controlsEnabled = false;
+        _rb.velocity = Vector2.zero; // Stop the player's movement
+    }
+
+    public void EnableControls()
+    {
+        controlsEnabled = true;
+    }
+
+    public void DisplayVictorySprite()
+    {
+        string key = gameObject.name == "Player1" ? "Player1CharacterIndex" : "Player2CharacterIndex";
+        int playerIndex = PlayerPrefs.GetInt(key, 0);
+
+        // Set the victory sprite based on the character index
+        if (playerIndex >= 0 && playerIndex < victorySprites.Length)
+        {
+            SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.sprite = victorySprites[playerIndex];
+            }
+            else
+            {
+                Debug.LogError("SpriteRenderer component not found on " + gameObject.name);
+            }
+        }
+        else
+        {
+            Debug.LogError("Character index out of range for victorySprites.");
+        }
+
+        DisableControls(); // Disable player controls after victory
     }
 }

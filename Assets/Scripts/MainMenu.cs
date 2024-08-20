@@ -5,10 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public int scene;
     public void PlayGame()
     {
-        SceneManager.LoadSceneAsync(scene);
+        SceneManager.LoadScene("CharacterSelection");
+    }
+
+    public void Tutorial()
+    {
+        SceneManager.LoadScene("Tutorial");
+    }
+
+    public void ReturnMainMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
     }
 
     public void QuitGame()

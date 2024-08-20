@@ -16,6 +16,10 @@ public class CharacterSelectionManager : MonoBehaviour
     public Button player2LeftButton;
     public Button player2RightButton;
 
+    public AudioSource audioSource; 
+    public AudioClip buttonClickSound;
+    public AudioClip checkBoxClickSound;
+
     private int player1Index = 0;
     private int player2Index = 0;
 
@@ -38,12 +42,50 @@ public class CharacterSelectionManager : MonoBehaviour
         UpdateControlInteractivity();
     }
 
+    void Update()
+    {
+        // Player 1 Controls
+        if (!isPlayer1Confirmed)
+        {
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                OnPlayer1Left();
+            }
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                OnPlayer1Right();
+            }
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                OnConfirmPlayer1();
+            }
+        }
+
+        // Player 2 Controls
+        if (!isPlayer2Confirmed)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                OnPlayer2Left();
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                OnPlayer2Right();
+            }
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                OnConfirmPlayer2();
+            }
+        }
+    }
+
     public void OnPlayer1Left()
     {
         if (!isPlayer1Confirmed)
         {
             player1Index = (player1Index - 1 + playerSprites.Length) % playerSprites.Length;
             UpdateCharacterUI();
+            PlayButtonClickSound();
         }
     }
 
@@ -53,6 +95,7 @@ public class CharacterSelectionManager : MonoBehaviour
         {
             player1Index = (player1Index + 1) % playerSprites.Length;
             UpdateCharacterUI();
+            PlayButtonClickSound();
         }
     }
 
@@ -62,6 +105,7 @@ public class CharacterSelectionManager : MonoBehaviour
         {
             player2Index = (player2Index - 1 + playerSprites.Length) % playerSprites.Length;
             UpdateCharacterUI();
+            PlayButtonClickSound();
         }
     }
 
@@ -71,6 +115,7 @@ public class CharacterSelectionManager : MonoBehaviour
         {
             player2Index = (player2Index + 1) % playerSprites.Length;
             UpdateCharacterUI();
+            PlayButtonClickSound();
         }
     }
 
@@ -85,6 +130,7 @@ public class CharacterSelectionManager : MonoBehaviour
         isPlayer1Confirmed = true;
         UpdateControlInteractivity();
         CheckReadyToStart();
+        PlayCheckBoxClickSound();
     }
 
     public void OnConfirmPlayer2()
@@ -92,6 +138,12 @@ public class CharacterSelectionManager : MonoBehaviour
         isPlayer2Confirmed = true;
         UpdateControlInteractivity();
         CheckReadyToStart();
+        PlayCheckBoxClickSound();
+    }
+
+    public void ReturnMainMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
     }
 
     private void CheckReadyToStart()
@@ -116,5 +168,21 @@ public class CharacterSelectionManager : MonoBehaviour
         PlayerPrefs.SetInt("Player2CharacterIndex", player2Index);
         PlayerPrefs.Save();
         SceneManager.LoadScene("Gameplay");
+    }
+
+    private void PlayButtonClickSound() 
+    {
+        if (audioSource != null && buttonClickSound != null)
+        {
+            audioSource.PlayOneShot(buttonClickSound);
+        }
+    }
+
+    private void PlayCheckBoxClickSound()
+    {
+        if (audioSource != null && checkBoxClickSound != null)
+        {
+            audioSource.PlayOneShot(checkBoxClickSound);
+        }
     }
 }

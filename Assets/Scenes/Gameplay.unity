@@ -734,10 +734,13 @@ MonoBehaviour:
   - {fileID: 2294275496952752960, guid: 3a312c339de4f8b4d8fc6d27d6995019, type: 3}
   - {fileID: 7916761912945320322, guid: 7019f7903151b0b4986d864e4476f82d, type: 3}
   - {fileID: 3692171282090785926, guid: 8ef5d549228cbcf41bc65fc9faf7395e, type: 3}
-  spawnPosition: {x: 0, y: 3, z: 0}
-  minSpawnInterval: 5
-  maxSpawnInterval: 15
-  buffDuration: 7
+  - {fileID: 1877231126648453045, guid: c89681def6ae16f4cb62a6a61e976c07, type: 3}
+  minX: -7
+  maxX: 7
+  spawnY: 4
+  minSpawnInterval: 4
+  maxSpawnInterval: 7
+  buffDuration: 8
 --- !u!4 &399129459
 Transform:
   m_ObjectHideFlags: 0
@@ -1403,7 +1406,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 586958789}
-  - component: {fileID: 586958788}
+  - component: {fileID: 586958791}
   - component: {fileID: 586958790}
   m_Layer: 0
   m_Name: ScoreManager
@@ -1412,50 +1415,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &586958788
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 586958787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9df07862333d81241a36fd25bbebd556, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player1ScoreImages:
-  - {fileID: 927085093}
-  player2ScoreImages:
-  - {fileID: 126017099}
-  scoreNumberSprites:
-  - {fileID: 681247719, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
-  - {fileID: -2139786023, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
-  - {fileID: 1790420004, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
-  - {fileID: -2015598778, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
-  - {fileID: 1824696795, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
-  - {fileID: -176254458, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
-  setNumberSprites:
-  - {fileID: 681247719, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
-  - {fileID: -2139786023, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
-  - {fileID: 1790420004, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
-  setEndedImage: {fileID: 1831709386}
-  winMatchImage: {fileID: 1024382322}
-  p1WonSprite: {fileID: 21300000, guid: 0aed51402e7e3da4fb3d6f275ebae436, type: 3}
-  p2WonSprite: {fileID: 21300000, guid: 356855170ef576949a73e09cb918fe0a, type: 3}
-  player1SetImages:
-  - {fileID: 1248546697}
-  player2SetImages:
-  - {fileID: 661141020}
-  player1: {fileID: 1279356313}
-  player2: {fileID: 1037827604}
-  scoreIncreaseSound: {fileID: 8300000, guid: e239d1b6164d8e847aa25b72f44e76e0, type: 3}
-  setWinSound: {fileID: 8300000, guid: dae184ea897582044a1eb9fbf1f45273, type: 3}
-  matchWinSound: {fileID: 8300000, guid: 32e2ed76b6faf144eb4b10ce84c580f2, type: 3}
-  winningScore: 5
-  setsToWinMatch: 2
-  setDelay: 1
-  matchWon: 0
 --- !u!4 &586958789
 Transform:
   m_ObjectHideFlags: 0
@@ -1567,6 +1526,50 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &586958791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 586958787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9df07862333d81241a36fd25bbebd556, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player1ScoreImages:
+  - {fileID: 927085093}
+  player2ScoreImages:
+  - {fileID: 126017099}
+  scoreNumberSprites:
+  - {fileID: 681247719, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
+  - {fileID: -2139786023, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
+  - {fileID: 1790420004, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
+  - {fileID: -2015598778, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
+  - {fileID: 1824696795, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
+  - {fileID: -176254458, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
+  setNumberSprites:
+  - {fileID: 681247719, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
+  - {fileID: -2139786023, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
+  - {fileID: 1790420004, guid: 65c0bdcce2d87bd42a0997875749cb6e, type: 3}
+  setEndedImage: {fileID: 1831709386}
+  winMatchImage: {fileID: 1024382322}
+  p1WonSprite: {fileID: 21300000, guid: 0aed51402e7e3da4fb3d6f275ebae436, type: 3}
+  p2WonSprite: {fileID: 21300000, guid: 356855170ef576949a73e09cb918fe0a, type: 3}
+  player1SetImages:
+  - {fileID: 1248546697}
+  player2SetImages:
+  - {fileID: 661141020}
+  player1: {fileID: 1279356313}
+  player2: {fileID: 1037827604}
+  scoreIncreaseSound: {fileID: 8300000, guid: e239d1b6164d8e847aa25b72f44e76e0, type: 3}
+  setWinSound: {fileID: 8300000, guid: dae184ea897582044a1eb9fbf1f45273, type: 3}
+  matchWinSound: {fileID: 8300000, guid: 32e2ed76b6faf144eb4b10ce84c580f2, type: 3}
+  winningScore: 5
+  setsToWinMatch: 2
+  setDelay: 1
+  matchWon: 0
 --- !u!1 &603325190
 GameObject:
   m_ObjectHideFlags: 0
@@ -2101,18 +2104,20 @@ MonoBehaviour:
   startImage: {fileID: 1781397856}
   countdownImage: {fileID: 93776717}
   countdownSprites:
-  - {fileID: -853326077, guid: 9755f54e8e18f6146bf7c303eab488be, type: 3}
-  - {fileID: -681087175, guid: 9755f54e8e18f6146bf7c303eab488be, type: 3}
-  - {fileID: -591609801, guid: 9755f54e8e18f6146bf7c303eab488be, type: 3}
+  - {fileID: 21300000, guid: 186ae811d4c7cca44850baf07a1dc9dd, type: 3}
+  - {fileID: 21300000, guid: cbeb7ae160f2f7f449d4829b5fa477df, type: 3}
+  - {fileID: 21300000, guid: e1c298e1b13c9914da7325bb73a4df8f, type: 3}
   countdownDuration: 3
-  scoreManager: {fileID: 586958788}
+  scoreManager: {fileID: 586958791}
   guideObject: {fileID: 1717464753}
   guideYPosition: 8.5
   gravityIncreaseRate: 1
   buffManager: {fileID: 399129458}
   audioSource: {fileID: 771043741}
   playerHitSound: {fileID: 8300000, guid: bc5d68dc8828e6e4f84bb53677ac10c9, type: 3}
-  wallHitSound: {fileID: 8300000, guid: bc5d68dc8828e6e4f84bb53677ac10c9, type: 3}
+  wallHitSound: {fileID: 8300000, guid: 3e531abd9991f9940a5dacfda837e6ac, type: 3}
+  countdownSound: {fileID: 8300000, guid: bd3be0c060de1c54aaa165d6d884b8d7, type: 3}
+  isPaused: 0
 --- !u!58 &771043739
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2864,13 +2869,15 @@ MonoBehaviour:
   _rb: {fileID: 1037827607}
   animator: {fileID: 1037827610}
   playerSprites:
-  - {fileID: -2133702523, guid: ed42e7115ceaa914c9aa9067db674cf0, type: 3}
+  - {fileID: -1301654996, guid: 7b8f7a86100553c4b8a72a87972e348e, type: 3}
   - {fileID: 963597461, guid: 513c96251b8610d4eae1a2bae2d6f92a, type: 3}
-  - {fileID: 2081965419, guid: 7f9b85138659f1749b86ebdedee28ddd, type: 3}
+  - {fileID: 1254377982, guid: 95cce322872a0894688317f669cfb5e3, type: 3}
+  - {fileID: -608954628, guid: 26bbf23b5c91ccd4d9799b6e8c2abb13, type: 3}
   animControllers:
   - {fileID: 9100000, guid: a1744a5a0502e3d4a94dccadd495fcdd, type: 2}
   - {fileID: 9100000, guid: 2d56ffa3874bc0f49a32fc995a99a244, type: 2}
   - {fileID: 9100000, guid: 3a2f88c0321b37e4787ef9e7d14e39b9, type: 2}
+  - {fileID: 9100000, guid: 4c3b534e05dc35a4b9f728d4207aa999, type: 2}
   moveSpeed: 9
   jumpPower: 10
   groundCheckPos: {fileID: 898651920}
@@ -2884,7 +2891,16 @@ MonoBehaviour:
   fallSpeedMultiplier: 2
   audioSource: {fileID: 1037827611}
   jumpSound: {fileID: 8300000, guid: 27e87c3460d9a5247b55dd50b5edbdc3, type: 3}
+  freezeBuffSound: {fileID: 8300000, guid: cf39c387ad742e940a8abe94a93d3e2a, type: 3}
+  bigBuffSound: {fileID: 8300000, guid: 3c75a84287ee0924c84a7f7d9be130d1, type: 3}
+  tinyBuffSound: {fileID: 8300000, guid: 354d35b4618371a4399e115516958f8b, type: 3}
+  speedBuffSound: {fileID: 8300000, guid: e7c91d9da7c34134db2716496b48c6fb, type: 3}
   isRoundStarting: 0
+  victorySprites:
+  - {fileID: 21300000, guid: 71590de4300c81c4cae3b31544a0c799, type: 3}
+  - {fileID: 21300000, guid: 8be0ce77e340d3b4d9a2c0d2d15b5e0b, type: 3}
+  - {fileID: 21300000, guid: 6cfa9f8c542ee8b4eb546a8e4085e662, type: 3}
+  - {fileID: 21300000, guid: 2d6f259b630c00d49a51c9a61c38f753, type: 3}
 --- !u!114 &1037827605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3120,7 +3136,7 @@ Animator:
   m_GameObject: {fileID: 1037827603}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 2d56ffa3874bc0f49a32fc995a99a244, type: 2}
+  m_Controller: {fileID: 9100000, guid: 4c3b534e05dc35a4b9f728d4207aa999, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -3431,6 +3447,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pauseMenuPanel: {fileID: 1328843951}
   volumeMenuPanel: {fileID: 951729649}
+  ballController: {fileID: 771043738}
 --- !u!114 &1120827721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3859,13 +3876,15 @@ MonoBehaviour:
   _rb: {fileID: 1279356316}
   animator: {fileID: 1279356319}
   playerSprites:
-  - {fileID: -2133702523, guid: ed42e7115ceaa914c9aa9067db674cf0, type: 3}
+  - {fileID: -1301654996, guid: 7b8f7a86100553c4b8a72a87972e348e, type: 3}
   - {fileID: 963597461, guid: 513c96251b8610d4eae1a2bae2d6f92a, type: 3}
-  - {fileID: 2081965419, guid: 7f9b85138659f1749b86ebdedee28ddd, type: 3}
+  - {fileID: 1254377982, guid: 95cce322872a0894688317f669cfb5e3, type: 3}
+  - {fileID: -608954628, guid: 26bbf23b5c91ccd4d9799b6e8c2abb13, type: 3}
   animControllers:
   - {fileID: 9100000, guid: a1744a5a0502e3d4a94dccadd495fcdd, type: 2}
   - {fileID: 9100000, guid: 2d56ffa3874bc0f49a32fc995a99a244, type: 2}
   - {fileID: 9100000, guid: 3a2f88c0321b37e4787ef9e7d14e39b9, type: 2}
+  - {fileID: 9100000, guid: 4c3b534e05dc35a4b9f728d4207aa999, type: 2}
   moveSpeed: 9
   jumpPower: 10
   groundCheckPos: {fileID: 824697058}
@@ -3879,7 +3898,16 @@ MonoBehaviour:
   fallSpeedMultiplier: 2
   audioSource: {fileID: 1279356320}
   jumpSound: {fileID: 8300000, guid: 27e87c3460d9a5247b55dd50b5edbdc3, type: 3}
+  freezeBuffSound: {fileID: 8300000, guid: cf39c387ad742e940a8abe94a93d3e2a, type: 3}
+  bigBuffSound: {fileID: 8300000, guid: 3c75a84287ee0924c84a7f7d9be130d1, type: 3}
+  tinyBuffSound: {fileID: 8300000, guid: 354d35b4618371a4399e115516958f8b, type: 3}
+  speedBuffSound: {fileID: 8300000, guid: e7c91d9da7c34134db2716496b48c6fb, type: 3}
   isRoundStarting: 0
+  victorySprites:
+  - {fileID: 21300000, guid: 71590de4300c81c4cae3b31544a0c799, type: 3}
+  - {fileID: 21300000, guid: 8be0ce77e340d3b4d9a2c0d2d15b5e0b, type: 3}
+  - {fileID: 21300000, guid: 6cfa9f8c542ee8b4eb546a8e4085e662, type: 3}
+  - {fileID: 21300000, guid: 2d6f259b630c00d49a51c9a61c38f753, type: 3}
 --- !u!114 &1279356314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4078,7 +4106,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -2133702523, guid: ed42e7115ceaa914c9aa9067db674cf0, type: 3}
+  m_Sprite: {fileID: -1301654996, guid: 7b8f7a86100553c4b8a72a87972e348e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5048,7 +5076,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 50}
-  m_SizeDelta: {x: 272, y: 64}
+  m_SizeDelta: {x: 294, y: 84}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1781397856
 MonoBehaviour:
@@ -5070,7 +5098,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 46d64e18be7828849a54a4d67f29a665, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bfc9b0d7b39cda7489bd69f43a2dee0b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5273,7 +5301,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 50}
-  m_SizeDelta: {x: 272, y: 64}
+  m_SizeDelta: {x: 294, y: 84}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1916009843
 MonoBehaviour:
@@ -5295,7 +5323,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6f9edcaf3ee7e4640867ecefab2a3b0b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d881e020ad82bd6469e4987cf5577c6c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
