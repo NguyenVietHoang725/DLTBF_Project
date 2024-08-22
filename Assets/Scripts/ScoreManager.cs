@@ -156,18 +156,18 @@ public class ScoreManager : MonoBehaviour
         if (player1SetsWon >= setsToWinMatch)
         {
             winMatchImage.sprite = p1WonSprite;
-            player1.DisplayVictorySprite();
             winningPlayer = player1;
         }
         else if (player2SetsWon >= setsToWinMatch)
         {
             winMatchImage.sprite = p2WonSprite;
-            player2.DisplayVictorySprite();
             winningPlayer = player2;
         }
 
         winMatchImage.enabled = true;
         setEndedImage.enabled = false;
+
+        winningPlayer.DisplayVictoryPose();
 
         MusicManager.instance.GetMusicSource().Pause();
 

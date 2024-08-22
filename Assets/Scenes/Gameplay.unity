@@ -2878,6 +2878,11 @@ MonoBehaviour:
   - {fileID: 9100000, guid: 2d56ffa3874bc0f49a32fc995a99a244, type: 2}
   - {fileID: 9100000, guid: 3a2f88c0321b37e4787ef9e7d14e39b9, type: 2}
   - {fileID: 9100000, guid: 4c3b534e05dc35a4b9f728d4207aa999, type: 2}
+  victorySprites:
+  - {fileID: 21300000, guid: 71590de4300c81c4cae3b31544a0c799, type: 3}
+  - {fileID: 21300000, guid: 8be0ce77e340d3b4d9a2c0d2d15b5e0b, type: 3}
+  - {fileID: 21300000, guid: 6cfa9f8c542ee8b4eb546a8e4085e662, type: 3}
+  - {fileID: 21300000, guid: 2d6f259b630c00d49a51c9a61c38f753, type: 3}
   moveSpeed: 9
   jumpPower: 10
   groundCheckPos: {fileID: 898651920}
@@ -2896,11 +2901,6 @@ MonoBehaviour:
   tinyBuffSound: {fileID: 8300000, guid: 354d35b4618371a4399e115516958f8b, type: 3}
   speedBuffSound: {fileID: 8300000, guid: e7c91d9da7c34134db2716496b48c6fb, type: 3}
   isRoundStarting: 0
-  victorySprites:
-  - {fileID: 21300000, guid: 71590de4300c81c4cae3b31544a0c799, type: 3}
-  - {fileID: 21300000, guid: 8be0ce77e340d3b4d9a2c0d2d15b5e0b, type: 3}
-  - {fileID: 21300000, guid: 6cfa9f8c542ee8b4eb546a8e4085e662, type: 3}
-  - {fileID: 21300000, guid: 2d6f259b630c00d49a51c9a61c38f753, type: 3}
 --- !u!114 &1037827605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3885,6 +3885,11 @@ MonoBehaviour:
   - {fileID: 9100000, guid: 2d56ffa3874bc0f49a32fc995a99a244, type: 2}
   - {fileID: 9100000, guid: 3a2f88c0321b37e4787ef9e7d14e39b9, type: 2}
   - {fileID: 9100000, guid: 4c3b534e05dc35a4b9f728d4207aa999, type: 2}
+  victorySprites:
+  - {fileID: 21300000, guid: 71590de4300c81c4cae3b31544a0c799, type: 3}
+  - {fileID: 21300000, guid: 8be0ce77e340d3b4d9a2c0d2d15b5e0b, type: 3}
+  - {fileID: 21300000, guid: 6cfa9f8c542ee8b4eb546a8e4085e662, type: 3}
+  - {fileID: 21300000, guid: 2d6f259b630c00d49a51c9a61c38f753, type: 3}
   moveSpeed: 9
   jumpPower: 10
   groundCheckPos: {fileID: 824697058}
@@ -3903,11 +3908,6 @@ MonoBehaviour:
   tinyBuffSound: {fileID: 8300000, guid: 354d35b4618371a4399e115516958f8b, type: 3}
   speedBuffSound: {fileID: 8300000, guid: e7c91d9da7c34134db2716496b48c6fb, type: 3}
   isRoundStarting: 0
-  victorySprites:
-  - {fileID: 21300000, guid: 71590de4300c81c4cae3b31544a0c799, type: 3}
-  - {fileID: 21300000, guid: 8be0ce77e340d3b4d9a2c0d2d15b5e0b, type: 3}
-  - {fileID: 21300000, guid: 6cfa9f8c542ee8b4eb546a8e4085e662, type: 3}
-  - {fileID: 21300000, guid: 2d6f259b630c00d49a51c9a61c38f753, type: 3}
 --- !u!114 &1279356314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4963,7 +4963,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: 92dd3fbbe9b0bd240ba2b451f1136de6, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0

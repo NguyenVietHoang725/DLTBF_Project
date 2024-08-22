@@ -319,22 +319,12 @@ public class BallController : MonoBehaviour
         ResetBallPosition();
 
         // Reset players to their starting positions
-        player1.transform.position = new Vector3(-7f, player1.transform.position.y, player1.transform.position.z);
-        player2.transform.position = new Vector3(7f, player2.transform.position.y, player2.transform.position.z);
+        player1.transform.position = new Vector3(-11f, player1.transform.position.y, player1.transform.position.z);
+        player2.transform.position = new Vector3(11f, player2.transform.position.y, player2.transform.position.z);
 
         // Disable player controls
         player1.DisableControls();
         player2.DisableControls();
-
-        // Display victory sprite for the winning player
-        if (scoreManager.GetWinningPlayer() == player1)
-        {
-            player1.DisplayVictorySprite();
-        }
-        else if (scoreManager.GetWinningPlayer() == player2)
-        {
-            player2.DisplayVictorySprite();
-        }
     }
 
     public void ResetBallPosition()

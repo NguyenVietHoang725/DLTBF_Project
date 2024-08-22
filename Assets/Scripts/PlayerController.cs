@@ -220,13 +220,21 @@ public class PlayerController : MonoBehaviour
         {
             audioSource.PlayOneShot(freezeBuffSound);
         }
-        float originalMoveSpeed = moveSpeed; // Store the original movement speed
 
+        float originalMoveSpeed = moveSpeed; // Store the original movement speed
         moveSpeed = 0; // Set the move speed to 0 to freeze the player
         _horizontalMovement = 0; // Stop any movement input
         canJump = false;
 
+        // Change the sprite color to blue
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Color originalColor = spriteRenderer.color; // Store the original color
+        spriteRenderer.color = Color.blue; // Change color to blue
+
         yield return new WaitForSeconds(duration);
+
+        // Restore the original color
+        spriteRenderer.color = originalColor;
 
         moveSpeed = originalMoveSpeed; // Restore the original move speed
         canJump = true;
@@ -277,29 +285,27 @@ public class PlayerController : MonoBehaviour
         controlsEnabled = true;
     }
 
-    public void DisplayVictorySprite()
+    public void DisplayVictoryPose()
     {
+        // Disable player controls
+        DisableControls();
+
+        // Stop any running animations
+        animator.enabled = false;
+
+        // Determine the player's index
         string key = gameObject.name == "Player1" ? "Player1CharacterIndex" : "Player2CharacterIndex";
         int playerIndex = PlayerPrefs.GetInt(key, 0);
 
-        // Set the victory sprite based on the character index
-        if (playerIndex >= 0 && playerIndex < victorySprites.Length)
+        // Set the victory sprite
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null && playerIndex >= 0 && playerIndex < victorySprites.Length)
         {
-            SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-            {
-                spriteRenderer.sprite = victorySprites[playerIndex];
-            }
-            else
-            {
-                Debug.LogError("SpriteRenderer component not found on " + gameObject.name);
-            }
+            spriteRenderer.sprite = victorySprites[playerIndex];
         }
         else
         {
             Debug.LogError("Character index out of range for victorySprites.");
         }
-
-        DisableControls(); // Disable player controls after victory
     }
 }
